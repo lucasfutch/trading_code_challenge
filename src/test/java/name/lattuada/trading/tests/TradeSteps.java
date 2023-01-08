@@ -4,11 +4,13 @@ import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
+import name.lattuada.trading.controller.OrderController;
 import name.lattuada.trading.model.EOrderType;
 import name.lattuada.trading.model.dto.OrderDTO;
 import name.lattuada.trading.model.dto.SecurityDTO;
 import name.lattuada.trading.model.dto.TradeDTO;
 import name.lattuada.trading.model.dto.UserDTO;
+import name.lattuada.trading.repository.IOrderRepository;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,8 +40,11 @@ public class TradeSteps {
     }
 
     // TODO implement: Given for "one security {string} and two users {string} and {string} exist"
+    @Given("one security {string} and two users {string} and {string} exist")
     public void oneSecurityAndTwoUsers(String securityName, String userName1, String userName2) {
-
+        createSecurity(securityName);
+        createUser(userName1);
+        createUser(userName2);
     }
 
     @When("user {string} puts a {string} order for security {string} with a price of {double} and quantity of {long}")
@@ -103,7 +108,25 @@ public class TradeSteps {
                              Double price,
                              Long quantity) {
         // TODO: implement create oder function
-        logger.info("To be implemented! ... Order created: {}");
+        // logger.info("To be implemented! ... Order created: {}");
+
+        OrderDTO orderDTO = new OrderDTO();
+        orderDTO.setUserId(userMap.get(userName).getId());
+        orderDTO.setSecurityId(securityMap.get(securityName).getId());
+        orderDTO.setType(orderType);
+        orderDTO.setPrice(price);
+        orderDTO.setQuantity(quantity);
+
+        IOrderRepository orderRepository = new IOrderRepository();
+
+        OrderDTO orderReturned = restUtility.post("api/orders",
+                orderDTO,
+                OrderDTO.class);
+
+        // orderMap.put(securityName, securityReturned);
+
+        logger.info("Order created: {}", orderReturned);
+
     }
 
 }
