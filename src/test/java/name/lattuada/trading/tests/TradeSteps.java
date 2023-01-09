@@ -10,7 +10,6 @@ import name.lattuada.trading.model.dto.OrderDTO;
 import name.lattuada.trading.model.dto.SecurityDTO;
 import name.lattuada.trading.model.dto.TradeDTO;
 import name.lattuada.trading.model.dto.UserDTO;
-import name.lattuada.trading.repository.IOrderRepository;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -117,15 +116,18 @@ public class TradeSteps {
         orderDTO.setPrice(price);
         orderDTO.setQuantity(quantity);
 
-        IOrderRepository orderRepository = new IOrderRepository();
-
         OrderDTO orderReturned = restUtility.post("api/orders",
                 orderDTO,
                 OrderDTO.class);
 
-        // orderMap.put(securityName, securityReturned);
-
-        logger.info("Order created: {}", orderReturned);
+        if (orderType == EOrderType.BUY) {
+            buyOrder = orderReturned;
+            logger.info("Buy Order created: {}", orderReturned);
+        }
+        else if (orderType == EOrderType.SELL) {
+            sellOrder = orderReturned;
+            logger.info("Sell Order created: {}", orderReturned);
+        }
 
     }
 

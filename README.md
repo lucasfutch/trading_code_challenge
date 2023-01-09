@@ -17,7 +17,6 @@ Maven (define the environment variable `M2_HOME` appropriately).
 Execute in a shell
 
 ```shell
-git clone https://github.com/maurizio-lattuada/trading.git
 cd trading
 mvn -U clean verify -DskipTests
 ```
